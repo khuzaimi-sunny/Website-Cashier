@@ -501,3 +501,162 @@ body {
         justify-content: center;
     }
 }
+/* Tambahan di bagian bawah file style.css yang sudah ada */
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: white;
+    margin: 10% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.modal-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.close-modal {
+    font-size: 28px;
+    cursor: pointer;
+    color: #94A3B8;
+    transition: 0.2s;
+}
+
+.close-modal:hover {
+    color: #EF4444;
+}
+
+#authFormContainer {
+    padding: 24px;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 13px;
+    color: #475569;
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.input-group input:focus, .input-group select:focus {
+    outline: none;
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.btn-auth {
+    width: 100%;
+    background: #FF6B35;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: 0.2s;
+}
+
+.btn-auth:hover {
+    background: #E55A2B;
+    transform: scale(0.98);
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #64748B;
+}
+
+.auth-switch a {
+    color: #FF6B35;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #334155;
+    padding: 8px 12px;
+    border-radius: 40px;
+    margin-bottom: 12px;
+}
+
+.user-badge i {
+    font-size: 18px;
+    color: #FF6B35;
+}
+
+/* Role-specific styles */
+.admin-badge {
+    background: #FF6B35;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.user-badge-role {
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
