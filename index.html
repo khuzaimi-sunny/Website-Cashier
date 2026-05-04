@@ -3,463 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Bikinin Cashier | Bike Service & Parts</title>
-    <!-- Tailwind CSS via CDN + Font Awesome -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Cheseto Restaurant - Mobile POS App</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- SweetAlert2 untuk notifikasi -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        /* custom smooth scroll & transisi */
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-        .transition-smooth {
-            transition: all 0.2s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1);
-        }
-    </style>
 </head>
-<body class="bg-gray-50">
+<body>
+    <div class="app-container">
+        <!-- Sidebar Kiri - Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <span>Cheseto</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item" data-page="takeaway">
+                    <i class="fas fa-bag-shopping"></i>
+                    <span>Take Away</span>
+                </a>
+                <a href="#" class="nav-item" data-page="history">
+                    <i class="fas fa-clock"></i>
+                    <span>History</span>
+                </a>
+                <a href="#" class="nav-item" data-page="report">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Report</span>
+                </a>
+                <a href="#" class="nav-item" data-page="alert">
+                    <i class="fas fa-bell"></i>
+                    <span>Alert</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="profile-section">
+                <img src="https://ui-avatars.com/api/?background=FF6B35&color=fff&name=Chef" alt="Profile">
+                <div class="profile-info">
+                    <h4>Chef Cheseto</h4>
+                    <p>Admin</p>
+                </div>
+            </div>
+        </aside>
 
-    <!-- Main App: SPA style dengan hash routing sederhana -->
-    <div id="app" class="min-h-screen flex flex-col">
-        <!-- Navbar dinamis akan di render via JS -->
-        <nav id="navbar" class="bg-indigo-700 text-white shadow-md sticky top-0 z-50"></nav>
-        
-        <!-- Konten utama dinamis -->
-        <main id="main-content" class="flex-1 container mx-auto px-4 py-6 max-w-6xl"></main>
-        
-        <!-- Footer sederhana -->
-        <footer class="bg-gray-800 text-gray-300 text-center py-4 text-sm">
-            &copy; 2025 Bikinin - Bike Workshop & Cashier System | Membership 20% Off | Delivery & Booking Antrian
-        </footer>
+        <!-- Konten Utama -->
+        <main class="main-content">
+            <!-- Header Pencarian -->
+            <div class="search-header">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search category or menu" id="searchInput">
+                </div>
+                <div class="stock-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="outOfStockCount">5</span> items out of stocks
+                </div>
+            </div>
+
+            <!-- Tab Kategori -->
+            <div class="category-tabs" id="categoryTabs">
+                <button class="cat-tab active" data-cat="all">All</button>
+                <button class="cat-tab" data-cat="Pizza">Pizza</button>
+                <button class="cat-tab" data-cat="Burger">Burger</button>
+                <button class="cat-tab" data-cat="Rice">Rice</button>
+                <button class="cat-tab" data-cat="Snacks">Snacks</button>
+                <button class="cat-tab" data-cat="Drinks">Drinks</button>
+            </div>
+
+            <!-- Area Menu & Order (2 kolom) -->
+            <div class="pos-layout">
+                <!-- Kolom Kiri: Daftar Menu -->
+                <div class="menu-section">
+                    <div class="section-title">
+                        <h3>Choose <span id="activeCategoryName">Pizza</span></h3>
+                        <span id="menuResultCount">10</span> Pizza Result
+                    </div>
+                    <div class="menu-grid" id="menuGrid">
+                        <!-- Menu akan di-render oleh JS -->
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Keranjang Order -->
+                <div class="cart-section">
+                    <div class="cart-header">
+                        <h3><i class="fas fa-receipt"></i> Current Orders</h3>
+                        <div class="table-info">
+                            <span>Table</span>
+                            <strong id="tableNumber">#907653</strong>
+                            <span>T1</span>
+                        </div>
+                    </div>
+                    <div class="cart-items" id="cartItems">
+                        <!-- Item keranjang -->
+                    </div>
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>items(<span id="totalItems">0</span>)</span>
+                            <span>$<span id="subtotalAmount">0.00</span></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (10%)</span>
+                            <span>$<span id="taxAmount">0.00</span></span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>$<span id="totalAmount">0.00</span></span>
+                        </div>
+                        <button class="btn-print" id="printBillBtn">
+                            <i class="fas fa-print"></i> Print Bills
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <script>
-        // ---------- DATA MODEL (CMS + Produk, Orders, Users, Memberships) ----------
-        // Daftar Ustadz (member VIP) - 5 ustadz dengan diskon 20%
-        const USTADZ_MEMBERS = [
-            { id: "m1", name: "Ustadz Abdul Somad", email: "ustad.somad@bikinin.com", discount: 20 },
-            { id: "m2", name: "Ustadz Hanan Attaki", email: "hanan@bikinin.com", discount: 20 },
-            { id: "m3", name: "Ustadz Adi Hidayat", email: "adi.hidayat@bikinin.com", discount: 20 },
-            { id: "m4", name: "Ustadz Das'ad Latif", email: "dasad@bikinin.com", discount: 20 },
-            { id: "m5", name: "Ustadz Khalid Basalamah", email: "khalid@bikinin.com", discount: 20 }
-        ];
+    <!-- Toast Notifikasi -->
+    <div id="toast" class="toast">Item ditambahkan ke order</div>
 
-        // Produk / jasa yang dijual
-        let products = [
-            { id: "p1", name: "Servis Sepeda Lengkap", price: 150000, category: "Jasa", stock: true },
-            { id: "p2", name: "Ban Dalam Sepeda", price: 45000, category: "Parts", stock: true },
-            { id: "p3", name: "Oli Rantai Premium", price: 35000, category: "Parts", stock: true },
-            { id: "p4", name: "Setel Rem & Gir", price: 75000, category: "Jasa", stock: true },
-            { id: "p5", name: "Lampu LED Sepeda", price: 120000, category: "Aksesoris", stock: true }
-        ];
-
-        // Data user (admin + user biasa + membership user bisa terdaftar via register)
-        let users = [
-            { id: "u1", username: "admin", password: "admin123", role: "admin", fullname: "Administrator", email: "admin@bikinin.com", membershipId: null },
-            { id: "u2", username: "budi", password: "budi123", role: "user", fullname: "Budi Santoso", email: "budi@mail.com", membershipId: null },
-            { id: "u3", username: "siti", password: "siti123", role: "user", fullname: "Siti Aisyah", email: "siti@mail.com", membershipId: "m1" } // contoh member ustadz
-        ];
-
-        // Order / transaksi
-        let orders = []; // setiap order: { id, userId, items, totalOriginal, totalAfterDiscount, deliveryMethod, queueBooking, deliveryAddress, status, trackingStatus, createdAt, peakHourFee }
-
-        // Current session
-        let currentUser = null; // { id, username, role, fullname, email, membershipId }
-
-        // Helper: cek membership & diskon
-        function getUserMembership(user) {
-            if (!user || !user.membershipId) return null;
-            return USTADZ_MEMBERS.find(m => m.id === user.membershipId);
-        }
-
-        // Helper: hitung biaya jam padat (antrean online) = 2000 jika booking antrian
-        const PEAK_HOUR_FEE = 2000;
-
-        // Fungsi simpan data ke localStorage agar CMS dan transaksi persistensi
-        function saveDataToLocal() {
-            localStorage.setItem("bikinin_users", JSON.stringify(users));
-            localStorage.setItem("bikinin_products", JSON.stringify(products));
-            localStorage.setItem("bikinin_orders", JSON.stringify(orders));
-        }
-
-        function loadDataFromLocal() {
-            const storedUsers = localStorage.getItem("bikinin_users");
-            const storedProducts = localStorage.getItem("bikinin_products");
-            const storedOrders = localStorage.getItem("bikinin_orders");
-            if (storedUsers) users = JSON.parse(storedUsers);
-            if (storedProducts) products = JSON.parse(storedProducts);
-            if (storedOrders) orders = JSON.parse(storedOrders);
-        }
-
-        // inisialisasi data awal jika kosong
-        function initDefaultData() {
-            if (users.length === 0) {
-                users = [
-                    { id: "u1", username: "admin", password: "admin123", role: "admin", fullname: "Administrator", email: "admin@bikinin.com", membershipId: null },
-                    { id: "u2", username: "budi", password: "budi123", role: "user", fullname: "Budi Santoso", email: "budi@mail.com", membershipId: null },
-                    { id: "u3", username: "siti", password: "siti123", role: "user", fullname: "Siti Aisyah", email: "siti@mail.com", membershipId: "m1" }
-                ];
-            }
-            if (products.length === 0) {
-                products = [
-                    { id: "p1", name: "Servis Sepeda Lengkap", price: 150000, category: "Jasa", stock: true },
-                    { id: "p2", name: "Ban Dalam Sepeda", price: 45000, category: "Parts", stock: true }
-                ];
-            }
-            saveDataToLocal();
-        }
-
-        // ------ RENDER ENGINE (SPA) ------
-        // setiap halaman di render berdasarkan hash
-        function renderNavbar() {
-            const navbar = document.getElementById("navbar");
-            if (!navbar) return;
-            let navHtml = `<div class="container mx-auto px-4 py-3 flex justify-between items-center flex-wrap">
-                <div class="flex items-center space-x-2 text-xl font-bold"><i class="fas fa-motorcycle"></i><span>Bikinin Casir</span></div>
-                <div class="flex gap-3 text-sm md:text-base">`;
-            if (currentUser) {
-                navHtml += `<a href="#home" class="hover:bg-indigo-600 px-3 py-1 rounded">🏠 Beranda</a>
-                            <a href="#transaction" class="hover:bg-indigo-600 px-3 py-1 rounded">🧾 Transaksi</a>
-                            <a href="#delivery-track" class="hover:bg-indigo-600 px-3 py-1 rounded">📦 Tracking</a>`;
-                if (currentUser.role === "admin") {
-                    navHtml += `<a href="#admin" class="hover:bg-indigo-600 px-3 py-1 rounded">⚙️ CMS Admin</a>`;
-                }
-                navHtml += `<a href="#profile" class="hover:bg-indigo-600 px-3 py-1 rounded">👤 ${currentUser.fullname.split(' ')[0]}</a>
-                            <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded">Logout</button>`;
-            } else {
-                navHtml += `<a href="#login" class="hover:bg-indigo-600 px-3 py-1 rounded">Login</a>
-                            <a href="#register" class="hover:bg-indigo-600 px-3 py-1 rounded">Daftar</a>`;
-            }
-            navHtml += `</div></div>`;
-            navbar.innerHTML = navHtml;
-            if (currentUser) {
-                document.getElementById("logoutBtn")?.addEventListener("click", () => {
-                    currentUser = null;
-                    saveDataToLocal();
-                    window.location.hash = "#login";
-                    render();
-                });
-            }
-        }
-
-        // Landing Page + Halaman Utama (keduanya digabung: landing singkat & daftar produk)
-        function renderLandingHome() {
-            const membershipList = USTADZ_MEMBERS.map(m => `<li class="text-sm"><i class="fas fa-star text-yellow-400"></i> ${m.name} - diskon 20%</li>`).join('');
-            return `
-                <div class="bg-white rounded-2xl shadow p-6 mb-8">
-                    <h1 class="text-3xl font-bold text-indigo-800">⚡ Selamat Datang di Bikinin Cashier</h1>
-                    <p class="text-gray-600 mt-2">Bengkel sepeda & parts terpercaya. Nikmati layanan booking antrian online, delivery order, dan membership spesial untuk para ustadz.</p>
-                    <div class="mt-4 grid md:grid-cols-2 gap-4">
-                        <div class="bg-green-50 p-4 rounded-xl"><i class="fas fa-truck-fast text-2xl text-green-600"></i> <span class="font-bold">Pesan Antar</span><br>Delivery ke rumah anda</div>
-                        <div class="bg-yellow-50 p-4 rounded-xl"><i class="fas fa-clock text-2xl text-yellow-600"></i> <span class="font-bold">Biaya Jam Padat</span><br>Booking antrian online +Rp2.000</div>
-                        <div class="bg-purple-50 p-4 rounded-xl"><i class="fas fa-user-check text-2xl text-purple-600"></i> <span class="font-bold">Membership Ustadz</span><br>Diskon 20% setiap transaksi</div>
-                        <div class="bg-blue-50 p-4 rounded-xl"><i class="fas fa-boxes text-2xl text-blue-600"></i> <span class="font-bold">Tracking Pengiriman</span><br>Update status realtime</div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-2xl font-bold">🛍️ Produk & Layanan Kami</h2>
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
-                        ${products.map(p => `
-                            <div class="border rounded-xl p-4 card-hover transition-smooth">
-                                <div class="font-bold text-lg">${p.name}</div>
-                                <div class="text-indigo-600 font-semibold">Rp ${p.price.toLocaleString()}</div>
-                                <div class="text-xs text-gray-500">${p.category}</div>
-                                ${p.stock ? '<span class="text-green-600 text-xs">Tersedia</span>' : '<span class="text-red-500">Habis</span>'}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="mt-8 p-4 bg-indigo-50 rounded-xl">
-                        <h3 class="font-bold">✨ Daftar Ustadz Member (Diskon 20%):</h3>
-                        <ul class="grid grid-cols-2 gap-1 mt-2">${membershipList}</ul>
-                        <p class="text-xs text-gray-500 mt-2">*Member yang terdaftar otomatis mendapat potongan 20% setiap belanja</p>
-                    </div>
-                    ${!currentUser ? `<div class="mt-6 text-center"><a href="#register" class="bg-indigo-600 text-white px-5 py-2 rounded-full inline-block">Daftar Sekarang</a></div>` : ''}
-                </div>
-            `;
-        }
-
-        // Halaman Transaksi (pilih produk, pilih delivery / booking antrian, hitung)
-        function renderTransactionPage() {
-            if (!currentUser) return `<div class="bg-white p-8 text-center">Silakan login terlebih dahulu <a href="#login" class="text-indigo-600">Login</a></div>`;
-            const membership = getUserMembership(currentUser);
-            const discountPercent = membership ? membership.discount : 0;
-
-            // form keranjang sederhana (state di JS)
-            return `
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-2xl font-bold">🧾 Buat Transaksi Baru</h2>
-                    ${membership ? `<div class="bg-green-100 p-2 my-2 rounded"><i class="fas fa-ticket-alt"></i> Member: ${membership.name} - Diskon 20% aktif!</div>` : `<div class="bg-gray-100 p-2 my-2 rounded">Member biasa: tidak ada diskon. Daftar ustadz untuk potongan 20%</div>`}
-                    <div class="mt-4">
-                        <label class="font-semibold">Pilih Produk:</label>
-                        <div id="product-list-trans" class="grid sm:grid-cols-2 gap-3 mt-2"></div>
-                    </div>
-                    <div class="mt-4 border-t pt-4">
-                        <div class="flex gap-4 flex-wrap">
-                            <div><label><input type="checkbox" id="deliveryCheck"> 📦 Pesan Antar (Delivery Order)</label></div>
-                            <div><label><input type="checkbox" id="queueBooking"> 🚶 Booking Antrian Online (+Rp2.000 jam padat)</label></div>
-                        </div>
-                        <div id="deliveryAddressDiv" class="hidden mt-2"><input type="text" id="deliveryAddress" placeholder="Alamat lengkap untuk delivery" class="border p-2 rounded w-full"></div>
-                    </div>
-                    <div class="mt-4 p-3 bg-gray-100 rounded">
-                        <div>Total Belanja: <span id="totalPreview">Rp 0</span></div>
-                        <div>Potongan Member (${discountPercent}%): <span id="discountPreview">Rp 0</span></div>
-                        <div>Biaya Antrian: <span id="feePreview">Rp 0</span></div>
-                        <div class="font-bold text-lg">Grand Total: <span id="grandPreview">Rp 0</span></div>
-                    </div>
-                    <button id="submitTransaksiBtn" class="bg-indigo-700 text-white px-6 py-2 rounded mt-4 w-full">Proses Transaksi</button>
-                </div>
-            `;
-        }
-
-        // Tracking Delivery
-        function renderTrackingPage() {
-            if (!currentUser) return `<div class="bg-white p-8 text-center">Login untuk lihat pesanan</div>`;
-            const userOrders = orders.filter(o => o.userId === currentUser.id).reverse();
-            if (userOrders.length === 0) return `<div class="bg-white p-6 rounded shadow">Belum ada transaksi.</div>`;
-            return `
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h2 class="text-2xl font-bold">📡 Tracking Pengiriman & Booking</h2>
-                    <div class="space-y-4 mt-4">
-                        ${userOrders.map(order => `
-                            <div class="border rounded-lg p-4">
-                                <div class="flex justify-between flex-wrap"><span class="font-bold">Order #${order.id}</span> <span class="text-sm">${new Date(order.createdAt).toLocaleString()}</span></div>
-                                <div>Metode: ${order.deliveryMethod} ${order.queueBooking ? ' + Antrian Online' : ''}</div>
-                                <div>Status Pengiriman/Proses: <span class="font-semibold text-indigo-700">${order.trackingStatus}</span></div>
-                                ${order.deliveryAddress ? `<div>Alamat Kirim: ${order.deliveryAddress}</div>` : ''}
-                                <div class="text-sm text-gray-500">Total dibayar: Rp ${order.totalAfterDiscount.toLocaleString()}</div>
-                                <div class="mt-2 flex gap-2">
-                                    ${order.trackingStatus === 'Menunggu Konfirmasi' ? '<span class="bg-yellow-200 px-2 py-0.5 rounded-full">⏳ Baru dipesan</span>' : ''}
-                                    ${order.trackingStatus === 'Sedang Diproses' ? '<span class="bg-blue-200 px-2 py-0.5 rounded-full">🔧 Diproses</span>' : ''}
-                                    ${order.trackingStatus === 'Dalam Perjalanan' ? '<span class="bg-purple-200 px-2 py-0.5 rounded-full">🚚 Dikirim</span>' : ''}
-                                    ${order.trackingStatus === 'Selesai' ? '<span class="bg-green-200 px-2 py-0.5 rounded-full">✅ Selesai</span>' : ''}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Admin CMS: mengelola produk, order, update tracking
-        function renderAdminPage() {
-            if (!currentUser || currentUser.role !== "admin") return "<div class='bg-white p-6'>Akses ditolak. Anda bukan admin.</div>";
-            return `
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-2xl shadow p-5">
-                        <h3 class="text-xl font-bold">📦 Kelola Produk (CMS)</h3>
-                        <div id="productListAdmin" class="space-y-2 max-h-64 overflow-auto"></div>
-                        <div class="mt-3"><input id="newProductName" placeholder="Nama produk" class="border p-1 w-full"><input id="newProductPrice" placeholder="Harga" class="border p-1 w-full mt-1"><button id="addProductBtn" class="bg-green-600 text-white px-3 py-1 mt-2 rounded">Tambah Produk</button></div>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow p-5">
-                        <h3 class="text-xl font-bold">📋 Semua Order & Update Tracking</h3>
-                        <div id="allOrdersAdmin" class="space-y-3 max-h-96 overflow-auto"></div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Profile user: menampilkan info membership
-        function renderProfilePage() {
-            if (!currentUser) return "<div>Login dulu</div>";
-            const membership = getUserMembership(currentUser);
-            return `
-                <div class="bg-white rounded-2xl shadow p-6 max-w-lg mx-auto">
-                    <h2 class="text-2xl font-bold">Profil Saya</h2>
-                    <p>Nama: ${currentUser.fullname}</p>
-                    <p>Email: ${currentUser.email}</p>
-                    <p>Role: ${currentUser.role}</p>
-                    <p>Membership: ${membership ? membership.name + ' (diskon 20%)' : 'Tidak ada membership. Daftar salah satu ustadz?'}</p>
-                    <p class="text-sm text-gray-500">*Catatan: Membership hanya untuk 5 ustadz spesial, hubungi admin untuk upgrade.</p>
-                </div>
-            `;
-        }
-
-        // auth pages
-        function renderLogin() {
-            return `<div class="bg-white rounded-2xl shadow p-6 max-w-md mx-auto"><h2 class="text-2xl font-bold">Login</h2><input id="loginUser" placeholder="Username" class="border p-2 w-full my-2"><input id="loginPass" type="password" placeholder="Password" class="border p-2 w-full my-2"><button id="doLogin" class="bg-indigo-600 text-white w-full py-2 rounded">Masuk</button><p class="mt-3 text-center">Belum punya akun? <a href="#register" class="text-indigo-600">Daftar</a></p><p class="text-xs mt-2">Demo: admin/admin123 atau budi/budi123</p></div>`;
-        }
-        function renderRegister() {
-            return `<div class="bg-white rounded-2xl shadow p-6 max-w-md mx-auto"><h2 class="text-2xl font-bold">Daftar Akun</h2><input id="regFullname" placeholder="Nama Lengkap" class="border p-2 w-full my-1"><input id="regEmail" placeholder="Email" class="border p-2 w-full my-1"><input id="regUsername" placeholder="Username" class="border p-2 w-full my-1"><input id="regPassword" type="password" placeholder="Password" class="border p-2 w-full my-1"><button id="doRegister" class="bg-indigo-600 text-white w-full py-2 rounded">Daftar</button><p class="mt-2 text-center"><a href="#login" class="text-indigo-600">Sudah punya akun? Login</a></p></div>`;
-        }
-
-        // event handlers & page specific JS
-        let currentCart = []; // sementara cart untuk transaksi
-
-        function attachTransactionEvents() {
-            const container = document.getElementById("product-list-trans");
-            if (!container) return;
-            // render daftar produk dengan quantity
-            container.innerHTML = products.map(p => `
-                <div class="flex justify-between items-center border p-2 rounded">
-                    <div><span class="font-medium">${p.name}</span> - Rp${p.price.toLocaleString()}</div>
-                    <div><button class="add-to-cart bg-blue-500 text-white px-2 py-1 rounded text-sm" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">+ Tambah</button></div>
-                </div>
-            `).join('');
-            window.cartItems = [];
-            window.updatePreview = () => {
-                let total = window.cartItems.reduce((sum,item)=> sum + (item.price * item.qty),0);
-                const discountPercent = getUserMembership(currentUser) ? 20 : 0;
-                let discount = total * discountPercent / 100;
-                const isQueue = document.getElementById("queueBooking")?.checked || false;
-                let fee = isQueue ? PEAK_HOUR_FEE : 0;
-                let grand = total - discount + fee;
-                document.getElementById("totalPreview").innerText = `Rp ${total.toLocaleString()}`;
-                document.getElementById("discountPreview").innerText = `Rp ${discount.toLocaleString()}`;
-                document.getElementById("feePreview").innerText = `Rp ${fee.toLocaleString()}`;
-                document.getElementById("grandPreview").innerText = `Rp ${grand.toLocaleString()}`;
-                window.currentGrand = grand; window.currentTotal=total; window.currentDiscount=discount;
-            };
-            document.querySelectorAll(".add-to-cart").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    let id = btn.dataset.id, name = btn.dataset.name, price = parseInt(btn.dataset.price);
-                    let existing = window.cartItems.find(i=>i.id===id);
-                    if(existing) existing.qty++;
-                    else window.cartItems.push({id,name,price,qty:1});
-                    Swal.fire({icon:'success',title:'Ditambahkan',text:`${name} masuk keranjang`,timer:800,showConfirmButton:false});
-                    window.updatePreview();
-                });
-            });
-            const deliveryCheck = document.getElementById("deliveryCheck");
-            const deliveryDiv = document.getElementById("deliveryAddressDiv");
-            deliveryCheck?.addEventListener("change", (e)=> deliveryDiv.classList.toggle("hidden", !e.target.checked));
-            document.getElementById("queueBooking")?.addEventListener("change", ()=> window.updatePreview());
-            document.getElementById("submitTransaksiBtn")?.addEventListener("click", () => {
-                if(!window.cartItems || window.cartItems.length ===0) return Swal.fire("Error","Pilih minimal satu produk","error");
-                const deliveryOrder = document.getElementById("deliveryCheck").checked;
-                const queueBooking = document.getElementById("queueBooking").checked;
-                let deliveryAddress = deliveryOrder ? document.getElementById("deliveryAddress").value : null;
-                if(deliveryOrder && !deliveryAddress) return Swal.fire("Alamat diperlukan","Isi alamat pengiriman","warning");
-                const totalOriginal = window.currentTotal;
-                const totalAfter = window.currentGrand;
-                const newOrderId = "ORD" + Date.now();
-                const newOrder = {
-                    id: newOrderId, userId: currentUser.id, items: window.cartItems.map(i=>({name:i.name, qty:i.qty, price:i.price})),
-                    totalOriginal, totalAfterDiscount: totalAfter, deliveryMethod: deliveryOrder ? "Delivery" : "Ambil Toko",
-                    queueBooking, deliveryAddress, status: "pending", trackingStatus: "Menunggu Konfirmasi",
-                    createdAt: new Date().toISOString(), peakHourFee: queueBooking ? PEAK_HOUR_FEE : 0
-                };
-                orders.push(newOrder);
-                saveDataToLocal();
-                Swal.fire("Sukses!",`Transaksi berhasil. Total bayar: Rp ${totalAfter.toLocaleString()}`, "success").then(()=>{
-                    window.location.hash = "#delivery-track";
-                    render();
-                });
-                window.cartItems = [];
-            });
-            window.updatePreview();
-        }
-
-        function attachAdminEvents() {
-            if(currentUser?.role !== "admin") return;
-            const renderProductAdmin = () => {
-                const div = document.getElementById("productListAdmin");
-                if(div) div.innerHTML = products.map(p=>`<div class="flex justify-between"><span>${p.name} - Rp${p.price}</span><button class="delete-prod text-red-500" data-id="${p.id}"><i class="fas fa-trash"></i></button></div>`).join('');
-                document.querySelectorAll(".delete-prod").forEach(btn=>{
-                    btn.addEventListener("click",()=>{
-                        let id = btn.dataset.id;
-                        products = products.filter(p=>p.id !== id);
-                        saveDataToLocal();
-                        renderAdminPage(); render(); attachAdminEvents();
-                    });
-                });
-            };
-            document.getElementById("addProductBtn")?.addEventListener("click",()=>{
-                let name = document.getElementById("newProductName").value;
-                let price = parseInt(document.getElementById("newProductPrice").value);
-                if(name && price>0){
-                    products.push({id:"p"+Date.now(), name, price, category:"Umum", stock:true});
-                    saveDataToLocal();
-                    renderAdminPage(); render(); attachAdminEvents();
-                } else Swal.fire("Error","isi nama dan harga valid","error");
-            });
-            const renderOrdersAdmin = () => {
-                const container = document.getElementById("allOrdersAdmin");
-                if(!container) return;
-                container.innerHTML = orders.map(order=>`
-                    <div class="border p-3 rounded">
-                        <div><b>Order ${order.id}</b> - User: ${order.userId} | ${order.deliveryMethod} | Status: ${order.trackingStatus}</div>
-                        <select class="tracking-update border rounded p-1 mt-1" data-orderid="${order.id}">
-                            <option ${order.trackingStatus === 'Menunggu Konfirmasi' ? 'selected' : ''}>Menunggu Konfirmasi</option>
-                            <option ${order.trackingStatus === 'Sedang Diproses' ? 'selected' : ''}>Sedang Diproses</option>
-                            <option ${order.trackingStatus === 'Dalam Perjalanan' ? 'selected' : ''}>Dalam Perjalanan</option>
-                            <option ${order.trackingStatus === 'Selesai' ? 'selected' : ''}>Selesai</option>
-                        </select>
-                        <button class="update-track-btn bg-indigo-500 text-white px-2 py-0.5 rounded ml-2" data-orderid="${order.id}">Update</button>
-                    </div>
-                `).join('');
-                document.querySelectorAll(".update-track-btn").forEach(btn=>{
-                    btn.addEventListener("click", (e)=>{
-                        const orderId = btn.dataset.orderid;
-                        const select = document.querySelector(`.tracking-update[data-orderid="${orderId}"]`);
-                        const newStatus = select.value;
-                        const ord = orders.find(o=>o.id === orderId);
-                        if(ord) ord.trackingStatus = newStatus;
-                        saveDataToLocal();
-                        Swal.fire("Updated","Status pengiriman diperbarui","success");
-                        renderAdminPage(); render(); attachAdminEvents();
-                    });
-                });
-            };
-            renderProductAdmin();
-            renderOrdersAdmin();
-        }
-
-        // Routing utama
-        function render() {
-            renderNavbar();
-            const hash = window.location.hash.slice(1) || "home";
-            const main = document.getElementById("main-content");
-            if(hash === "login" && !currentUser) main.innerHTML = renderLogin();
-            else if(hash === "register" && !currentUser) main.innerHTML = renderRegister();
-            else if(!currentUser && (hash !== "login" && hash !== "register")) main.innerHTML = renderLandingHome();
-            else {
-                if (hash === "home") main.innerHTML = renderLandingHome();
-                else if (hash === "transaction") { main.innerHTML = renderTransactionPage(); attachTransactionEvents(); }
-                else if (hash === "delivery-track") { main.innerHTML = renderTrackingPage(); }
-                else if (hash === "admin") { main.innerHTML = renderAdminPage(); attachAdminEvents(); }
-                else if (hash === "profile") { main.innerHTML = renderProfilePage(); }
-                else main.innerHTML = renderLandingHome();
-            }
-            // event auth jika ada form
-            if(hash === "login" && !currentUser){
-                document.getElementById("doLogin")?.addEventListener("click",()=>{
-                    let uname = document.getElementById("loginUser").value;
-                    let pwd = document.getElementById("loginPass").value;
-                    let user = users.find(u=>u.username === uname && u.password === pwd);
-                    if(user) { currentUser = {...user}; saveDataToLocal(); window.location.hash = "#home"; render(); }
-                    else Swal.fire("Gagal","Username/password salah","error");
-                });
-            }
-            if(hash === "register" && !currentUser){
-                document.getElementById("doRegister")?.addEventListener("click",()=>{
-                    let full = document.getElementById("regFullname").value;
-                    let email = document.getElementById("regEmail").value;
-                    let uname = document.getElementById("regUsername").value;
-                    let pass = document.getElementById("regPassword").value;
-                    if(full && email && uname && pass){
-                        let exist = users.find(u=>u.username === uname);
-                        if(exist) Swal.fire("Gagal","Username sudah ada","error");
-                        else{
-                            let newUser = { id:"u"+Date.now(), username: uname, password: pass, role:"user", fullname:full, email, membershipId: null };
-                            users.push(newUser);
-                            saveDataToLocal();
-                            Swal.fire("Berhasil","Silakan login","success").then(()=>{ window.location.hash="#login"; render(); });
-                        }
-                    }else Swal.fire("Lengkapi data","Semua field harus diisi","warning");
-                });
-            }
-        }
-
-        window.addEventListener("hashchange", render);
-        loadDataFromLocal();
-        initDefaultData();
-        render();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
